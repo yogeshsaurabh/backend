@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>OTP for Evolve</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            margin-top: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+       hr {
+            border: none;
+            height: 1px;
+            background-color: #e0e0e0; /* Slight gray color */
+            opacity: 0.5; /* Soft appearance */
+            margin: 20px 0; /* Adds spacing above and below the horizontal line */
+        }
+
+        h6 {
+            color: gray;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+
+        .otp {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3c3c3c
+        }
+
+        .disclaimer {
+            font-size: 14px;
+            color: #666666;
+        }
+
+        .evolve-logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="evolve-logo">
+        <img src="https://cdn.letsevolve.in/evolve-logo.webp" height="28px" alt="evolve logo">
+    </div>
+    <hr>
+    <div class="otp-container">
+        <p>Thank you for signing up! Please use the following One-Time Password (OTP) to complete your registration:</p>
+        <div class="otp">{{ otp }}</div>
+        <p class="disclaimer">If you did not attempt to sign up for our service, please ignore this email.</p>
+        <span style="font-size: 14px; color: #444d56;">Best regards,</span>
+        <br>
+        <span style="font-size: 16px; color: rgb(68, 77, 86);">
+            <strong>Team Evolve</strong>
+        </span>
+    </div>
+    <hr>
+    <div>
+        <h6>Genpreneur Technologies Pvt Ltd</h6>
+    </div>
+</div>
+</body>
+</html>

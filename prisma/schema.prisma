@@ -1,0 +1,165 @@
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+generator client {
+  provider             = "prisma-client-py"
+  interface            = "asyncio"
+  recursive_type_depth = "5"
+}
+
+model Student {
+  id                  Int           @id @default(autoincrement())
+  created_at          DateTime      @default(now())
+  updated_at          DateTime      @updatedAt
+  phone_number        String?       @unique
+  otp                 String?
+  otp_expires_at      DateTime?
+  otp_attempts        Int           @default(0)
+  web_otp             String?
+  web_otp_expires_at  DateTime?
+  web_otp_attempts    Int           @default(0)
+  last_web_login_at   DateTime?
+  phone_verified      Boolean       @default(false)
+  live_class_enabled  Boolean       @default(false)
+  name                String?
+  age                 Int?
+  email               String?       @unique
+  profile             Json?
+  is_active           Boolean       @default(true)
+  Organization        Organization? @relation(fields: [organization_id], references: [id])
+  activation_attempts Int           @default(0)
+  organization_id     Int?
+  Batch               Batch?        @relation(fields: [batch_id], references: [id])
+  batch_id            Int?
+
+  @@index([organization_id])
+  @@index([batch_id])
+}
+
+model ActivationCode {
+  id              Int          @id @default(autoincrement())
+  created_at      DateTime     @default(now())
+  updated_at      DateTime     @updatedAt
+  organization    Organization @relation(fields: [organization_id], references: [id])
+  organization_id Int
+  activation_code String
+  student_email   String       @unique
+
+  @@index([activation_code, student_email])
+  @@index([organization_id])
+}
+
+model Teacher {
+  id             Int         @id @default(autoincrement())
+  created_at     DateTime    @default(now())
+  updated_at     DateTime    @updatedAt
+  name           String
+  age            Int?
+  phone_number   String      @unique
+  email          String      @unique
+  password       String
+  phone_verified Boolean     @default(false)
+  is_active      Boolean     @default(true)
+  LiveClasses    LiveClass[]
+}
+
+model Organization {
+  id              Int              @id @default(autoincrement())
+  created_at      DateTime         @default(now())
+  updated_at      DateTime         @updatedAt
+  name            String           @unique
+  max_capacity    Int
+  Students        Student[]
+  Batches         Batch[]
+  ActivationCodes ActivationCode[]
+}
+
+model Module {
+  id            Int         @id @default(autoincrement())
+  created_at    DateTime    @default(now())
+  updated_at    DateTime    @updatedAt
+  module_number Int         @unique
+  description   Json
+  LiveClasses   LiveClass[]
+}
+
+model Batch {
+  id              Int          @id @default(autoincrement())
+  created_at      DateTime     @default(now())
+  updated_at      DateTime     @updatedAt
+  name            String
+  available_seats Int
+  Organization    Organization @relation(fields: [organization_id], references: [id])
+  organization_id Int
+  LiveClasses     LiveClass[]
+  Student         Student[]
+
+  @@index([organization_id])
+}
+
+model LiveClass {
+  id              Int             @id @default(autoincrement())
+  created_at      DateTime        @default(now())
+  updated_at      DateTime        @updatedAt
+  status          LiveClassStatus @default(SCHEDULED)
+  name            String
+  meeting_link    String?         @unique
+  teacher         Teacher?        @relation(fields: [teacher_id], references: [id])
+  teacher_id      Int?
+  module          Module          @relation(fields: [module_id], references: [id])
+  module_id       Int
+  batch           Batch           @relation(fields: [batch_id], references: [id])
+  batch_id        Int
+  class_starts_at DateTime
+  class_ends_at   DateTime
+
+  @@index([teacher_id])
+  @@index([module_id])
+  @@index([batch_id])
+  @@index([meeting_link])
+}
+
+model Admin {
+  id          Int      @id @default(autoincrement())
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  username    String   @unique
+  password    String
+  is_verified Boolean  @default(false)
+}
+
+model Question {
+  id            Int            @id @default(autoincrement())
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
+  grade         Int // The grade level which this question is suitable for (ex: 6th grade).
+  question      Json
+  answer_id     Int
+  QuizResponses QuizResponse[]
+
+  @@index([grade])
+}
+
+model QuizResponse {
+  id          Int       @id @default(autoincrement())
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+  student_id  Int?
+  question    Question? @relation(fields: [question_id], references: [id])
+  question_id Int?
+  response    Json
+
+  @@unique([student_id, question_id])
+  @@index([student_id])
+  @@index([question_id])
+}
+
+enum LiveClassStatus {
+  SCHEDULED
+  ONGOING
+  ENDED
+  CANCELLED
+}

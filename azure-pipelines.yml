@@ -5,19 +5,6 @@
 trigger:
 - dev
 
-resources:
-- repo: self
-
-variables:
-  # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: '9c758986-2fee-4857-b90e-8357559bc9ef'
-  imageRepository: 'letsevolvebackend'
-  containerRegistry: 'cicdgithubrepo.azurecr.io'
-  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
-  tag: '$(Build.BuildId)'
-
-  # Agent VM image name
-  vmImageName: 'ubuntu-latest'
 
 stages:
 - stage: Build
